@@ -21,9 +21,6 @@ TrelloPowerUp.initialize({
   'card-badges': function(t, opts) {
     return t.get('board', 'shared').then(data => {
       const { board, card } = t.getContext();
-      // console.log({ board, card, data });
-
-      // console.log('We just loaded the card name for fun: ' + id);
       const isUnknown = data[card].x < 328;
       return [
         {
