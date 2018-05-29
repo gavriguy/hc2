@@ -1,9 +1,5 @@
 /* global TrelloPowerUp */
 
-console.log('aaa')
-
-var Promise = TrelloPowerUp.Promise;
-
 var onBtnClick = function (t, opts) {
   t.modal({
     url: './index.html',
