@@ -7,8 +7,24 @@ const t = window.TrelloPowerUp.iframe();
 
 const handleStop = ticketId => (e, data) => {
   const { x, y } = data;
-  t.set('board', 'shared', { [ticketId]: { x, y } });
+  t.set(ticketId, 'shared', { position: { x, y } });
 };
+
+const mapIndexed = R.addIndex(R.map);
+
+function getTicketsPositions(tickets) {
+  const promises = R.map(ticket => {
+    return t.get(ticket.id, 'shared');
+  })(tickets);
+
+  return Promise.all(promises).then(values => {
+
+    return mapIndexed((val, i) => ({
+      ...tickets[i],
+      position: val.position
+    }))(values);
+  });
+}
 
 const Ticket = ({ id, position, color, onClick, isSelected }) => (
   <Draggable
@@ -41,15 +57,9 @@ class HillChart extends Component {
     t.get('board', 'shared').then(data => {
       t.lists('all').then(lists => {
         t.cards('all').then(tickets => {
-          const ticktesWithPosition = R.map(ticket => ({
-            ...ticket,
-            name: `${ticket.name} [${
-              lists.find(list => list.id === ticket.idList).name
-            }]`,
-            position: data[ticket.id] ? data[ticket.id] : { x: 0, y: 0 }
-          }))(tickets);
-
-          this.setState({ tickets: ticktesWithPosition });
+          getTicketsPositions(tickets).then(ticketsWithPosition => {
+            this.setState({ tickets: ticketsWithPosition });
+          });
         });
       });
     });

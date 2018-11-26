@@ -34,9 +34,10 @@ TrelloPowerUp.initialize({
     });
   },
   'card-badges': function(t, opts) {
-    return t.get('board', 'shared').then(data => {
-      const { board, card } = t.getContext();
-      const isUnknown = data[card].x < 340;
+    const { card } = t.getContext();
+
+    return t.get(card, 'shared').then(data => {
+      const isUnknown = data.position.x < 340;
       return [
         {
           dynamic: function() {
