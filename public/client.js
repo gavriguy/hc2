@@ -33,20 +33,54 @@ TrelloPowerUp.initialize({
       ];
     });
   },
+  'card-detail-badges': function(t, opts) {
+    // console.log('***');
+    const { card } = t.getContext();
+    return t.get(card, 'shared').then(data => {
+      // console.log({data});
+
+      return [
+        {
+          title: 'Hill Chart',
+          text: data.visible ? 'Make Hidden' : 'Make Visible',
+          callback: function(t, opts) {
+            // console.log('foo');
+            t.set(card, 'shared', { visible: !data.visible });
+          }
+        }
+      ];
+    });
+    // return [
+    //   {
+    //     title: 'Hill Chart',
+    //     text: 'Hidden - show on hill chart',
+    //     callback: function(t, opts) {
+    //       console.log('foo');
+    //     }
+    //   }
+    // ];
+
+    // return t.get(card, 'shared').then(data => {
+    //   console.log({ data });
+
+    //   return [
+    //     {
+    //       title: 'Popup Detail Badge',
+    //       text: 'Popup'
+    //     }
+    //   ];
+    // });
+  },
   'card-badges': function(t, opts) {
     const { card } = t.getContext();
 
     return t.get(card, 'shared').then(data => {
-      const isUnknown = data.position.x < 340;
+      if (!data.visible) return [];
+      const isUnknown = data.position ? data.position.x < 340 : true;
       return [
         {
-          dynamic: function() {
-            return {
-              text: isUnknown ? 'Figuring things out' : 'Making it happen',
-              refresh: 10,
-              color: isUnknown ? 'orange' : 'green'
-            };
-          }
+          text: isUnknown ? 'Figuring things out' : 'Making it happen',
+          color: isUnknown ? 'orange' : 'green'
         }
       ];
     });

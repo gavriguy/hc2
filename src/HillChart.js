@@ -21,6 +21,7 @@ function getTicketsPositions(tickets) {
 
     return mapIndexed((val, i) => ({
       ...tickets[i],
+      visible: val.visible,
       position: val.position
     }))(values);
   });
@@ -95,7 +96,7 @@ class HillChart extends Component {
           }}
         >
           {tickets.map(ticket => (
-            <Ticket
+            ticket.visible && <Ticket
               id={ticket.id}
               onClick={this.handleClick.bind(this, ticket.id)}
               key={ticket.id}
